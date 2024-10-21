@@ -1,10 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-POR_HACER = 'POR_HACER'
-EN_PROGRESO = 'EN_PROGRESO'
-COMPLETADA = 'COMPLETADA'
-
 class Sprint(models.Model):
     nombre = models.CharField(max_length=200)
     objetivo = models.TextField(blank=True, null=True)
@@ -26,16 +22,16 @@ class Sprint(models.Model):
 class Tarea(models.Model):
     
     ESTADO_CHOICES = [
-        (POR_HACER, 'Por hacer'),
-        (EN_PROGRESO, 'En progreso'),
-        (COMPLETADA, 'Completada'),
+        ("POR_HACER", 'Por hacer'),
+        ("EN_PROGRESO", 'En progreso'),
+        ("COMPLETADA", 'Completada'),
     ]
 
     titulo = models.CharField(max_length=200)
     descripcion = models.TextField(blank=True)
     criterios_aceptacion = models.TextField(blank=True, null=True)
     prioridad = models.IntegerField()
-    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default=POR_HACER)
+    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default="POR_HACER")
     esfuerzo_estimado = models.IntegerField()
     responsable = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     sprint_asignado = models.ForeignKey(Sprint, null=True, on_delete=models.SET_NULL)
@@ -48,21 +44,21 @@ class Tarea(models.Model):
         constraints = [
             models.CheckConstraint(check=models.Q(prioridad__gte=0), name='prioridad_no_negativa'),
             models.CheckConstraint(check=models.Q(esfuerzo_estimado__gte=0), name='esfuerzo_estimado_no_negativo'),
-            models.CheckConstraint(check=models.Q(estado__in=[POR_HACER, EN_PROGRESO, COMPLETADA]), name='estado_valido_tarea'),
+            models.CheckConstraint(check=models.Q(estado__in=["POR_HACER", "EN_PROGRESO", "COMPLETADA"]), name='estado_valido_tarea'),
         ] 
 
 class Epica(models.Model):
 
     ESTADO_CHOICES = [
-        (POR_HACER, 'Por hacer'),
-        (EN_PROGRESO, 'En progreso'),
-        (COMPLETADA, 'Completada'),
+        ("POR_HACER", 'Por hacer'),
+        ("EN_PROGRESO", 'En progreso'),
+        ("COMPLETADA", 'Completada'),
     ]
 
     nombre = models.CharField(max_length=200)
     descripcion = models.TextField(blank=True, null=True)
     criterios_aceptacion = models.TextField(blank=True, null=True)
-    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default=POR_HACER)
+    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default="POR_HACER")
     responsable = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     tareas_asociadas = models.ManyToManyField(Tarea, related_name='epicas')
     esfuerzo_estimado_total = models.IntegerField()
@@ -75,6 +71,6 @@ class Epica(models.Model):
         constraints = [
             models.CheckConstraint(check=models.Q(esfuerzo_estimado_total__gte=0), name='esfuerzo_total_no_negativo'),
             models.CheckConstraint(check=models.Q(progreso__gte=0) & models.Q(progreso__lte=1), name='progreso_valido'),
-            models.CheckConstraint(check=models.Q(estado__in=[POR_HACER, EN_PROGRESO, COMPLETADA]), name='estado_valido_epica'),
+            models.CheckConstraint(check=models.Q(estado__in=["POR_HACER", "EN_PROGRESO", "COMPLETADA"]), name='estado_valido_epica'),
             models.CheckConstraint(check=models.Q(fecha_fin__gte=models.F('fecha_inicio')), name='fecha_fin_posterior_epica')
         ]
