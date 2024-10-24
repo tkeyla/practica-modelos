@@ -16,6 +16,11 @@ def consulta3(tarea_id):
     tarea = Tarea.objects.get(id=tarea_id)
     return tarea.dependencias.all()
 
+# 4. Listar todas las épicas que tienen tareas en progreso.
+def consulta4():
+    epicas_en_progreso = Epica.objects.filter(tareas_asociadas__estado="EN_PROGRESO").distinct()
+    return epicas_en_progreso
+
 #6: 6. Obtener la suma de esfuerzo estimado de todas las tareas asociadas a una épica específica.
 
 #7: Listar los sprints que tiene un Scrum Master asignado.
@@ -42,6 +47,14 @@ print("CONSULTA 3: \n")
 tareas = consulta3(6)
 for tarea in tareas:
     print(tarea)
+    print("-" * 40)
+
+#CONSULTA 4
+print("CONSULTA 4: \n")
+epicas = consulta4()
+for epica in epicas:
+    print(f"Épica: {epica.nombre}")
+    print(f"Progreso: {epica.progreso}")
     print("-" * 40)
 
 #CONSULTA 7
