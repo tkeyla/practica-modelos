@@ -11,97 +11,95 @@ NOTA: Esto esta sujeto a cambios y mejoras, use algoritmos que capaz no hayamos 
 son simples y cumplen la funcion.
 
 """
-
 from django.contrib.auth.models import User
-from datetime import date, timedelta
-from random import randint, choice
-from .models import Sprint, Tarea, Epica  
+from scrum_app.models import Sprint, Tarea, Epica
 
-#Creacion de usuarios
-for i in range(1, 11):
-    User.objects.create_user(username=f'user{i}', password='password123')
+# 1. Crear usuarios (Scrum Masters, responsables y miembros del equipo)
 
-#Asignar usuarios aleatoriamente para Scrum Masters y equipo de desarrollo
-usuarios = list(User.objects.all())
+usuarios = []
 
-#Creacion de los sprint
+for i in range(10):
+    usuario = User.objects.create_user(username=f'usuario{i}', password='password123')
+    usuarios.append(usuario)
+
+# 2. Crear Sprints
 sprint1 = Sprint.objects.create(
-    nombre='Sprint 1', 
-    objetivo='Objetivo del Sprint 1',
-    fecha_inicio=date.today(), 
-    fecha_fin=date.today() + timedelta(days=14), 
-    velocidad=randint(20, 40),
-    scrum_master=choice(usuarios)
+    nombre="Sprint 1",
+    objetivo="Objetivo del Sprint 1",
+    fecha_inicio="2024-10-01",
+    fecha_fin="2024-10-15",
+    velocidad=40,
+    scrum_master=usuarios[0],
 )
 sprint2 = Sprint.objects.create(
-    nombre='Sprint 2', 
-    objetivo='Objetivo del Sprint 2',
-    fecha_inicio=date.today() + timedelta(days=15), 
-    fecha_fin=date.today() + timedelta(days=29), 
-    velocidad=randint(20, 40),
-    scrum_master=choice(usuarios)
+    nombre="Sprint 2",
+    objetivo="Objetivo del Sprint 2",
+    fecha_inicio="2024-10-16",
+    fecha_fin="2024-10-30",
+    velocidad=35,
+    scrum_master=usuarios[1],
 )
 sprint3 = Sprint.objects.create(
-    nombre='Sprint 3', 
-    objetivo='Objetivo del Sprint 3',
-    fecha_inicio=date.today() + timedelta(days=30), 
-    fecha_fin=date.today() + timedelta(days=44), 
-    velocidad=randint(20, 40),
-    scrum_master=choice(usuarios)
+    nombre="Sprint 3",
+    objetivo="Objetivo del Sprint 3",
+    fecha_inicio="2024-11-01",
+    fecha_fin="2024-11-15",
+    velocidad=50,
+    scrum_master=usuarios[2],
 )
 
-#Se asigna un equipo de desarrollo a cada sprint
-for sprint in [sprint1, sprint2, sprint3]:
-    equipo = [choice(usuarios) for _ in range(5)]  #5 usuarios por sprint
-    sprint.equipo_desarrollo.add(*equipo)
+# 3. Asignar miembros del equipo a los sprints
+sprint1.equipo_desarrollo.add(usuarios[3], usuarios[4], usuarios[5])
+sprint2.equipo_desarrollo.add(usuarios[6], usuarios[7], usuarios[8])
+sprint3.equipo_desarrollo.add(usuarios[3], usuarios[7], usuarios[9])
 
-#Se crean las epicas
+# 4. Crear épicas
 epica1 = Epica.objects.create(
-    nombre='Épica 1',
-    descripcion='Descripción de la épica 1',
-    estado='POR_HACER',
-    responsable=choice(usuarios),
+    nombre="Epica 1",
+    descripcion="Descripción de la épica 1",
+    criterios_aceptacion="Criterios de aceptación de la épica 1",
+    estado="POR_HACER",
+    responsable=usuarios[0],
     esfuerzo_estimado_total=100,
-    progreso=0
+    progreso=0.2
 )
+
 epica2 = Epica.objects.create(
-    nombre='Épica 2',
-    descripcion='Descripción de la épica 2',
-    estado='EN_PROGRESO',
-    responsable=choice(usuarios),
+    nombre="Epica 2",
+    descripcion="Descripción de la épica 2",
+    criterios_aceptacion="Criterios de aceptación de la épica 2",
+    estado="EN_PROGRESO",
+    responsable=usuarios[1],
     esfuerzo_estimado_total=80,
     progreso=0.5
 )
 
-#Se crean tareas y se las asignan a sprints o epicas
+# 5. Crear tareas y asignarlas a sprints y épicas
 for i in range(1, 31):
     tarea = Tarea.objects.create(
-        titulo=f'Tarea {i}',
-        descripcion=f'Descripción de la tarea {i}',
-        prioridad=randint(1, 10),
-        estado=choice(['POR_HACER', 'EN_PROGRESO', 'COMPLETADA']),
-        esfuerzo_estimado=randint(1, 20),
-        responsable=choice(usuarios),
-        sprint_asignado=choice([sprint1, sprint2, sprint3])
+        titulo=f"Tarea {i}",
+        descripcion=f"Descripción de la tarea {i}",
+        criterios_aceptacion=f"Criterios de aceptación de la tarea {i}",
+        prioridad=i % 5,
+        estado="POR_HACER" if i % 3 == 0 else "EN_PROGRESO" if i % 3 == 1 else "COMPLETADA",
+        esfuerzo_estimado=i * 2,
+        responsable=usuarios[i % 10],
+        sprint_asignado=sprint1 if i <= 10 else sprint2 if i <= 20 else sprint3,
     )
 
-    #Se asignan algunas tareas a épicas
-    if i % 2 == 0:
+    # Asignar tareas a épicas
+    if i <= 15:
         epica1.tareas_asociadas.add(tarea)
     else:
         epica2.tareas_asociadas.add(tarea)
 
-    #Se agregan dependencias aleatorias entre tareas
-    if i > 5:  #Se agregan dependencias a partir de la tarea 6
-        dependencias = Tarea.objects.filter(id__lt=tarea.id).order_by('?')[:randint(1, 3)]
-        tarea.dependencias.add(*dependencias)
+    # Asignar dependencias
+    if i > 1:
+        tarea.dependencias.add(Tarea.objects.get(titulo=f"Tarea {i-1}"))
 
-#Se asignan tareas a cada sprint
+# 6. Asignar backlog a los sprints
 sprint1.backlog_sprint.add(*Tarea.objects.filter(sprint_asignado=sprint1))
 sprint2.backlog_sprint.add(*Tarea.objects.filter(sprint_asignado=sprint2))
 sprint3.backlog_sprint.add(*Tarea.objects.filter(sprint_asignado=sprint3))
 
-#Se crean dependencias entre épicas
-epica1.dependencias.add(epica2)
-
-print("Datos poblados correctamente.")
+print("Datos de prueba creados con éxito.")
