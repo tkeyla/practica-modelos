@@ -6,8 +6,11 @@ Este repositorio contiene varios scripts para la gestión y manipulación de dat
 Antes de comenzar, asegúrate de tener instalados los siguientes programas:
 
 -Python
+
 -Django: El proyecto está desarrollado en Django, por lo que debes tenerlo instalado.
+
 -PostgreSQL: El servidor de base de datos utilizado es PostgreSQL, por lo que deberás tenerlo instalado y un usuario postgres y base de datos postgres con contraseña 12345 o modificarlo en settings.py
+
 -Git: Para clonar el repositorio remoto, asegúrate de tener Git instalado.
 
 ## Instrucciones de instalación
