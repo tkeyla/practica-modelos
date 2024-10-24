@@ -16,34 +16,37 @@ def consulta3(tarea_id):
     tarea = Tarea.objects.get(id=tarea_id)
     return tarea.dependencias.all()
 
+#6: 6. Obtener la suma de esfuerzo estimado de todas las tareas asociadas a una épica específica.
+
+#7: Listar los sprints que tiene un Scrum Master asignado.
+def consulta7(id):
+    sprints = Sprint.objects.filter(scrum_master=id)
+    return sprints
+
 #CONSULTA 1
 print("CONSULTA 1: \n")
 tareas = consulta1(6)
 for tarea in tareas:
-    print(f"Título: {tarea.titulo}")
-    print(f"Descripción: {tarea.descripcion}")
-    print(f"Estado: {tarea.estado}")
-    print(f"Responsable: {tarea.responsable.username}")
+    print(tarea)
     print("-" * 40) 
 
 #CONSULTA 2
 print("CONSULTA 2: \n")
 tareas = consulta2(2)
 for tarea in tareas:
-    print(f"Título: {tarea.titulo}")
-    print(f"Descripción: {tarea.descripcion}")
-    print(f"Estado: {tarea.estado}")
-    print(f"Responsable: {tarea.responsable.username}")
-    print(f"Sprint asignado: {tarea.sprint_asignado.nombre}")
+    print(tarea)
     print("-" * 40) 
 
 #CONSULTA 3
 print("CONSULTA 3: \n")
 tareas = consulta3(6)
 for tarea in tareas:
-    print(f"Título: {tarea.titulo}")
-    print(f"Descripción: {tarea.descripcion}")
-    print(f"Estado: {tarea.estado}")
-    print(f"Responsable: {tarea.responsable.username}")
-    print(f"Sprint asignado: {tarea.sprint_asignado.nombre}")
-    print("-" * 40) 
+    print(tarea)
+    print("-" * 40)
+
+#CONSULTA 7
+print("Consulta 7: \n")
+sprints = consulta7(3)
+for sprint in sprints:
+    print (sprint)
+    print("-" * 40)
