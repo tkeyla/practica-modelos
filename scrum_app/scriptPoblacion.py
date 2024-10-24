@@ -84,6 +84,7 @@ for i in range(1, 31):
         prioridad=i % 5,
         estado="POR_HACER" if i % 3 == 0 else "EN_PROGRESO" if i % 3 == 1 else "COMPLETADA",
         esfuerzo_estimado=i * 2,
+        bloqueadores="Aun imaginando la idea" if i % 3 == 0 else "",
         responsable=responsables[i % 6],  # Corregido el subscript de responsables
         sprint_asignado=sprint1 if i <= 10 else sprint2 if i <= 20 else sprint3,
     )
