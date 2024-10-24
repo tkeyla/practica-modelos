@@ -36,10 +36,6 @@ Con el entorno virtual activado, instala las dependencias del proyecto ejecutand
 ### 5. Migraciones de base de datos
 python manage.py migrate
 
-### 6. Ejecutar el servidor
-python manage.py runserver
-El servidor estará disponible en http://localhost:8000.
-
 ## Scripts
 
 ### 1. `limpiarDatos.py`
