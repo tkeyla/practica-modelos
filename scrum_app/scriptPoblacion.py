@@ -54,7 +54,7 @@ sprint1.equipo_desarrollo.add(miembrosEquipo[0], miembrosEquipo[1], miembrosEqui
 sprint2.equipo_desarrollo.add(miembrosEquipo[3], miembrosEquipo[4], miembrosEquipo[5])
 sprint3.equipo_desarrollo.add(miembrosEquipo[6], miembrosEquipo[7], miembrosEquipo[8])
 
-#4: Crear épicas
+#4: Crear epicas
 epica1 = Epica.objects.create(
     nombre="Epica 1",
     descripcion="Descripción de la épica 1",
