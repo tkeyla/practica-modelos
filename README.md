@@ -3,59 +3,46 @@
 Este repositorio contiene varios scripts para la gestión y manipulación de datos relacionados con un proyecto Scrum en una aplicación Django. A continuación, se detalla el uso de cada archivo Python proporcionado.
 
 # Requisitos previos
-Antes de comenzar, asegúrate de tener instalados los siguientes programas:
+Antes de comenzar, asegúrate de tener instalados las siguientes herramientas:
 
--Python
-
--Django: El proyecto está desarrollado en Django, por lo que debes tenerlo instalado.
-
--PostgreSQL: El servidor de base de datos utilizado es PostgreSQL, por lo que deberás tenerlo instalado y un usuario postgres y base de datos postgres con contraseña 12345 o modificarlo en settings.py
-
+-Python: En su version 3.10
 -Git: Para clonar el repositorio remoto, asegúrate de tener Git instalado.
 
 ## Instrucciones de instalación
 
 ### 1. Clonar el repositorio
 
-Primero, clona el repositorio en tu máquina local. Abre una terminal y ejecuta el siguiente comando:
-git clone <URL_DEL_REPOSITORIO>
+Primero, clona el repositorio en tu máquina local. En una ubicación deseada, abre una terminal y ejecuta el siguiente comando:
+
+`git clone <URL_DEL_REPOSITORIO>`
+
+Se va a crear una carpeta practica-modelos dentro, que contendra el proyecto.
 
 ### 2. Crear y activar un entorno virtual
-cd <nombre_del_directorio_clonado>
-python -m venv env
+
+En una carpeta aparte del proyecto, ejecutar este comando:
+
+`python -m venv env`
 
 Para activar el entorno virtual:
-En Windows: env\Scripts\activate
-En Linux/macOS: source env/bin/activate
+
+En Windows: `env\Scripts\activate`
+En Linux/macOS: `source env/bin/activate`
 
 ### 3. Instalar las dependencias
-Con el entorno virtual activado, instala las dependencias del proyecto ejecutando el siguiente comando: pip install -r requirements.txt
 
-### 4. Intala y configra PostgreSQL
+Moverse con el entorno virtual activado a la carpeta practica-modelos descargada del repositorio remoto, e instalar las dependencias del proyecto en el entorno virtual ejecutando el siguiente comando: 
 
-### 5. Migraciones de base de datos
-python manage.py migrate
+`pip install -r requirements.txt`
 
-## Scripts
+### 4. Migraciones de base de datos
 
-### 1. `limpiarDatos.py`
-Este script elimina datos de la base de datos relacionados con tareas, épicas, sprints y usuarios específicos. Está diseñado para realizar una limpieza completa de los datos en el entorno de desarrollo.
+Ejecutar inmediatamente este comando para ejecutar la migración inicial:
 
-#### Funcionalidades:
-- Elimina todas las **tareas**, **épicas** y **sprints** de la base de datos.
-- Elimina usuarios cuyos nombres comiencen con "scrumMaster", "responsable" y "miembroEquipo".
-- Imprime la cantidad restante de tareas, épicas, sprints y usuarios luego de la eliminación.
-- Resetea las secuencias de IDs para asegurarse de que los próximos registros comiencen con los valores correctos.
+`python manage.py migrate`
 
-**Advertencia**: Este script debe ser ejecutado con **responsabilidad**, ya que elimina de forma irreversible todos los datos mencionados.
+## Descripción del modelo
 
-#### Uso:
-```
-python manage.py shell <
-scrum_app/limpiarDatos.py
-```
-
-### 2. `models.py`
 Contiene los modelos de la aplicación **Scrum** en Django, que representan las siguientes entidades:
 
 - **Sprint**: Período de tiempo durante el cual el equipo trabaja en completar tareas.
@@ -64,7 +51,28 @@ Contiene los modelos de la aplicación **Scrum** en Django, que representan las 
 
 Los modelos incluyen restricciones en las fechas y esfuerzos estimados.
 
-### 3. `scriptsConsulta.py`
+## Scripts
+
+Para ejecutar los scripts y empezar a usar la aplicación, estar con el entorno virtual activo
+en una consola en la carpeta practica-modelos y ejecutar los comandos mostrados abajo en orden.
+
+### 1. `scriptPoblacion.py`
+Este script genera datos iniciales para poblar la base de datos con **usuarios**, **sprints**, **épicas** y asignaciones de equipo de desarrollo.
+
+#### Funcionalidades:
+- Crear usuarios para Scrum Masters, responsables y miembros del equipo.
+- Crear y poblar sprints con los datos generados.
+- Asignar miembros del equipo a los sprints.
+- Crear épicas y asociarlas a responsables y tareas.
+
+#### Uso:
+
+Este script está diseñado para ser ejecutado una sola vez para poblar la base de datos:
+
+`python manage.py shell < scrum_app/scriptPoblacion.py`
+
+### 2. `scriptsConsulta.py`
+
 Este archivo contiene consultas comunes a la base de datos relacionadas con las tareas, épicas y sprints en el contexto Scrum.
 
 #### Funcionalidades:
@@ -77,27 +85,22 @@ Este archivo contiene consultas comunes a la base de datos relacionadas con las 
 
 #### Uso:
 Las consultas pueden ejecutarse dentro del shell de Django de la siguiente manera:
-```
-python manage.py shell<
-scrum_app/scriptConsultas.py
-```
 
-### 4. `scriptPoblacion.py`
-Este script genera datos iniciales para poblar la base de datos con **usuarios**, **sprints**, **épicas** y asignaciones de equipo de desarrollo.
+`python manage.py shell < scrum_app/scriptConsultas.py`
+
+### 3. `limpiarDatos.py (OPCIONAL)`
+Este script elimina datos de la base de datos relacionados con tareas, épicas, sprints y usuarios específicos. Está diseñado para realizar una limpieza completa de los datos en el entorno de desarrollo.
 
 #### Funcionalidades:
-- Crear usuarios para Scrum Masters, responsables y miembros del equipo.
-- Crear y poblar sprints con los datos generados.
-- Asignar miembros del equipo a los sprints.
-- Crear épicas y asociarlas a responsables y tareas.
+- Elimina todas las **tareas**, **épicas**, **sprints** y las tablas creadas por ManyToManyField, de la base de datos.
+- Elimina usuarios cuyos nombres comiencen con "scrumMaster", "responsable" y "miembroEquipo".
+- Imprime la cantidad restante de tareas, épicas, sprints y usuarios luego de la eliminación.
+- Resetea las secuencias de IDs para asegurarse de que los próximos registros comiencen con los valores correctos.
+
+**Advertencia**: Este script debe ser ejecutado con **responsabilidad**, ya que elimina de forma irreversible todos los datos mencionados.
 
 #### Uso:
-Este script está diseñado para ser ejecutado una sola vez para poblar la base de datos:
-```
-python manage.py shell<
-scrum_app/scriptPoblacion.py
-```
+
+`python manage.py shell < scrum_app/limpiarDatos.py`
 
 **Nota**: En caso de errores o si desea resetear los datos, puede usar `limpiarDatos.py` antes de ejecutar nuevamente este script.
-
-Recuerde ejecutar estos scripts en un entorno controlado, especialmente aquellos que eliminan datos o realizan operaciones críticas.
